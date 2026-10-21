@@ -1,0 +1,405 @@
+---
+title: "The Analysis of Red  Wine Quality Using Machine Learning model"
+author: "Jane Okon-Jeffrey"
+date: "2024-09-10"
+output: 
+  pdf_document:
+    toc: yes
+    toc_depth: 2
+bibliography: Project1references.bib
+---
+
+\newpage
+
+## Introduction
+
+In an attractive region of Portugal, the appeal of Vinho Verde which means "green wine" calls wine adventures and connoisseurs to discover the unique blend of taste and scenery [@winalist2024vinhoverde] of its vineyards. 
+
+Wine quality is a critical factor in the wine industry, influencing consumer preferences, pricing, and market demand. The assessment of wine quality is traditionally performed by human experts known as connoisseurs. However, with the increasing availability of wine-related data, machine learning has emerged as a powerful tool [@james2013introduction; @weisberg2014applied] that can predict wine quality based on its physicochemical properties.
+
+This project aims to analyze the quality of red wine using machine learning techniques. By analyzing the various attributes of red wine, the objective is to identify the key factors that influence wine quality and develop predictive models to assess wine quality automatically. The insights gained from this study could help winemakers optimize their production processes, improve the overall product quality and reduce the request of connoisseurs to predict the quality of their wines.
+
+## Literature Review
+
+The application of machine learning in enology (the study of wine) has progressed in recent years. Several studies have explored the use of various algorithms to predict wine quality based on physicochemical properties.
+
+For instance, Cortez et al. (2009)[@cortez2009modeling] used a dataset from the Vinho Verde region of Portugal to develop models using support vector machines (SVMs), neural networks, and random forests. Their study demonstrated that random forests and SVMs were particularly effective in predicting wine quality, with an accuracy exceeding 70%.
+
+Other researchers have focused on feature selection to improve the predictive power of models. For example, González-Briones et al. (2018)[@gonzalez2018feature] employed genetic algorithms to select the most relevant features from a wine dataset, resulting in improved model performance.
+
+In this project, I build upon these existing studies by comparing the quality of red wine using machine learning, specifically linear regression and random forest. Random forests have been shown to be effective for high-dimensional data [@breiman2001random; @liu2018survey], while linear regression is often applied for interpretable models [@ioannidis2008tutorial]. I also explored the importance of different physicochemical properties in determining wine quality and assessed the models' performance across both types of wine.
+
+## Problem/Purpose
+
+The goal of this project is to determine which physicochemical parameters significantly impact the quality of red wine, specifically focusing on the “Vinho Verde” variety produced in northern Portugal. By applying machine learning, the study seeks to predict which variables—such as volatile acidity, chlorides, and alcohol—are most associated with determining red wine quality. This approach builds on previous studies in enology that have used machine learning to model wine quality while focusing exclusively on red wine for a more targeted analysis.
+
+## Data Preprocessing
+
+The dataset used in this study consists of physicochemical properties of 12 variables, along with their quality ratings on a scale from 0 to 10. The data preprocessing steps included:
+
+- **Dependent variable**: Quality of the wine (on a scale from 1 (worst) to 10 (best)).
+
+- **Independent variables**: Fixed acidity, volatile acidity, citric acid, residual sugar, chlorides, free sulfur dioxide, total sulfur dioxide, density, pH, sulfates, alcohol.
+
+
+1. **Data Loading**: The dataset was loaded into R Markdown.
+
+2. **Missing Values**: A check for missing values was performed, revealing no missing data.
+
+
+## Table of the independent and dependent variables
+
+| Variables | Regressors           | Coefficients     |
+|-----------|----------------------|------------------|
+| y         | quality              | \(\beta_0\)      |
+| x1        | fixed.acidity        | \(\beta_1\)      |
+| x2        | volatile.acidity     | \(\beta_2\)      |
+| x3        | citric.acid          | \(\beta_3\)      |
+| x4        | residual.sugar       | \(\beta_4\)      |
+| x5        | chlorides            | \(\beta_5\)      |
+| x6        | free.sulfur.dioxide  | \(\beta_6\)      |
+| x7        | total.sulfur.dioxide | \(\beta_7\)      |
+| x8        | density              | \(\beta_8\)      |
+| x9        | pH                   | \(\beta_9\)      |
+| x10       | sulphates            | \(\beta_{10}\)   |
+| x11       | alcohol              | \(\beta_{11}\)   |
+
+## Prediction of the initial red wine quality based on all measured regressors
+
+The equation for linear regression is:
+
+\[
+y = \beta_0 + \beta_1 x_1 + \dots + \beta_n x_n
+\]
+
+where \( y \) is the dependent variable (quality), \( x_1, x_2, \dots, x_n \) are the independent variables or regressors, and \( \beta_0, \beta_1, \dots, \beta_n \) are the coefficients.
+
+### Coefficient Table
+
+| Coefficients_red   | Estimate | Std. Error | t value | Pr(>|t|)  | Significance |
+|--------------------|----------|------------|---------|----------|--------------|
+| (Intercept)        | 21.97    | 21.19      | 1.036   | 0.3002   |              |
+| fixed.acidity      | 0.02499  | 0.02595    | 0.963   | 0.3357   |              |
+| volatile.acidity   | -1.084   | 0.1211     | -8.948  | < 2e-16  | ***          |
+| citric.acid        | -0.1826  | 0.1472     | -1.240  | 0.2150   |              |
+| residual.sugar     | 0.01633  | 0.01500    | 1.089   | 0.2765   |              |
+| chlorides          | -1.874   | 0.4193     | -4.470  | 8.37e-06 | ***          |
+| free.sulfur.dioxide| 0.004361 | 0.002171   | 2.009   | 0.0447   | *            |
+| total.sulfur.dioxide| -0.003265| 0.0007287  | -4.480  | 8.00e-06 | ***          |
+| density            | -17.88   | 21.63      | -0.827  | 0.4086   |              |
+| pH                 | -0.4137  | 0.1916     | -2.159  | 0.0310   | *            |
+| sulphates          | 0.9163   | 0.1143     | 8.014   | 2.13e-15 | ***          |
+| alcohol            | 0.2762   | 0.02648    | 10.429  | < 2e-16  | ***          |
+
+\newpage
+
+### Significance Code
+
+| Significance Code | Definition       |
+|-------------------|------------------|
+| ***               | 0.001            |
+| **                | 0.01             |
+| *                 | 0.05             |
+| .                 | 0.1              |
+|                   | 1                |
+
+### Regression Model Equation
+
+For the red wine data, the linear regression model equation based on the regressors without considering the p-values is:
+
+\[
+\text{quality} = 21.97 + (0.02499 \times \text{fixed.acidity}) - (1.084 \times \text{volatile.acidity}) \\
+- (0.1826 \times \text{citric.acid}) + (0.01633 \times \text{residual.sugar}) \\
+- (1.874 \times \text{chlorides}) + (0.004361 \times \text{free.sulfur.dioxide}) \\
+- (0.003265 \times \text{total.sulfur.dioxide}) - (17.88 \times \text{density}) \\
+- (0.4137 \times \text{pH}) + (0.9163 \times \text{sulphates}) + (0.2762 \times \text{alcohol})
+\]
+
+### Significant Variables (p-value < 0.05)
+
+The model with p-values less than the significance level (\(\alpha = 0.05\)) includes:
+
+\[
+\text{quality} = - (1.084 \times \text{volatile.acidity}) \\
+- (1.874 \times \text{chlorides}) \\
++ (0.004361 \times \text{free.sulfur.dioxide}) \\
+- (0.003265 \times \text{total.sulfur.dioxide}) \\
+- (0.4137 \times \text{pH}) \\
++ (0.9163 \times \text{sulphates}) \\
++ (0.2762 \times \text{alcohol})
+\]
+
+### Analysis
+
+There are several regressors that stand out as being significantly associated with red wine quality, since they have p-values less than the significance level (\(\alpha = 0.05\)). These regressors are:
+
+| Variable | Description         |
+|:--------:|:-------------------:|
+| x2       | volatile.acidity     |
+| x5       | chlorides            |
+| x6       | free.sulfur.dioxide  |
+| x7       | total.sulfur.dioxide |
+| x9       | pH                   |
+| x10      | sulphates            |
+| x11      | alcohol              |
+
+Volatile acidity, chlorides, total sulfur dioxide, and pH have a significant negative effect on wine quality, meaning that higher levels of these components tend to decrease wine quality. On the other hand, alcohol and sulphates have strong positive effects, suggesting that higher concentrations of these components lead to better wine quality.
+
+### Model Performance
+
+This model has an R-squared of 0.3606, suggesting that it explains about 36% of the fitted data in the regression model in the wine quality data.
+
+
+
+## Exploratory Data Analysis
+Now, we will observe a plot of the residuals vs the predicted response check the\
+**linearity assumption** and **constant variance**
+
+![Normality of the red wine quality]("C:/Users/simpl/OneDrive/Desktop/CAPSTONE/Project 1/m0_red_plot.png")
+
+The plot looks satisfactory. The residuals does not show any obvious pattern. Hence, it has a constant variance and linearity assumption is satisfied.
+
+## Normality
+Next, I had to observe **normality**
+
+![Histogram of the red wine quality]("C:/Users/simpl/OneDrive/Desktop/CAPSTONE/Project 1/quality_histogram.png")
+
+From my observation, the dependent/predictive variable, quality, looks like a normal distribution with a slight skewness to the right. The Q-Q (quantile-quantile) plot below also shows that most of the data are on line but the tail ends do show some skewness which proves the skewness on the histogram.
+
+![QQ plot of the red wine quality]("C:/Users/simpl/OneDrive/Desktop/CAPSTONE/Project 1/qqnorm_m0_red_residuals.png")
+
+\newpage
+
+## Shapiro_Wilk test
+
+I performed the Shapiro-Wilk test for normality on the residuals of the model. The test statistic is given by:
+
+$W = 0.99087$
+
+The corresponding p-value is:
+
+$$p\text{-value} = 1.954 \times 10^{-8}$$
+
+Since the p-value is very small, I reject the null hypothesis, indicating that the residuals are not normally distributed.
+
+Observation of the correlation matrix among all 11 regressors and the predictive variable (quality), in order to visually determine which variables are closely associated. 
+
+\newpage
+
+![Correlation plot of the red wine quality]("C:/Users/simpl/OneDrive/Desktop/CAPSTONE/Project 1/correlation_plot_red.png")
+
+\newpage
+
+The regressors that have the most effect on quality are, volatile.acidity (-0.39)/alcohol (0.48), and sulphates (0.25). This observation can also be seen on the summary output of the m0_red model and that there is correlation between citric acid and fixed acidity. It also shows a significant correlation between free sulfur dioxide and total sulfur dixoide. Multicollinearity might be present between density and fixed.acidity, fixed.acidity and citric.acid.
+
+
+Since **multicollinearity** was found in the correlation matrix, a Variance Inflation Factor(VIF) test was conducted to confirm our assumption that it does exist in the model.
+
+| Regressors            | VIF      |
+|----------------------|----------|
+| fixed.acidity        | 7.767512 |
+| volatile.acidity      | 1.789390 |
+| citric.acid           | 3.128022 |
+| residual.sugar        | 1.702588 |
+| chlorides             | 1.481932 |
+| free.sulfur.dioxide   | 1.963019 |
+| total.sulfur.dioxide  | 2.186813 |
+| density               | 6.343760 |
+| pH                   | 3.329732 |
+| sulphates             | 1.429434 |
+| alcohol               | 3.031160 |
+
+Regressors above may be causing multicollinearity in model 11 based on the VIF:
+
+$fixed acidity = 7.767512$
+$density = 6.343760$
+
+It has been confirmed that there are normality and multicollinearity issues, the outliers has to be addressed to see if the coefficient of determination (R-squared) will improve.
+
+By removing the outliers, we can see that R-squared has improved by only a small amount of $0.066$ from $0.361$ to $0.427$. 
+
+I would compare both the data with and without outliers.
+
+
+
+## Best Subsets Regression With Outliers
+
+
+### Model Index and Predictors
+
+| Model Index | Predictors                                                                                  |
+|-------------|---------------------------------------------------------------------------------------------|
+| 1           | alcohol                                                                                    |
+| 2           | volatile..acidity alcohol                                                                   |
+| 3           | volatile..acidity sulphates alcohol                                                         |
+| 4           | volatile..acidity total.sulfur.dioxide sulphates alcohol                                  |
+| 5           | volatile..acidity chlorides total.sulfur.dioxide sulphates alcohol                        |
+| 6           | volatile..acidity chlorides total.sulfur.dioxide pH sulphates alcohol                     |
+| 7           | volatile..acidity chlorides free.sulfur.dioxide total.sulfur.dioxide pH sulphates alcohol |
+| 8           | volatile..acidity citric.acid chlorides free.sulfur.dioxide total.sulfur.dioxide pH sulphates alcohol |
+| 9           | volatile..acidity citric.acid residual.sugar chlorides free.sulfur.dioxide total.sulfur.dioxide pH sulphates alcohol |
+| 10          | fixed.acidity volatile..acidity citric.acid residual.sugar chlorides free.sulfur.dioxide total.sulfur.dioxide pH sulphates alcohol |
+| 11          | fixed.acidity volatile..acidity citric.acid residual.sugar chlorides free.sulfur.dioxide total.sulfur.dioxide density pH sulphates alcohol |
+
+### Subsets Regression Summary with Outliers
+
+| Model | R-Square | Adj. R-Square | Pred R-Square | C(p)    | AIC      | SBIC      | SBC       | MSEP    | FPE     | HSP    | APC    |
+|-------|----------|---------------|---------------|---------|----------|-----------|-----------|---------|---------|--------|--------|
+| 1     | 0.2267   | 0.2263        | 0.2246        | 324.1115| 3448.1135| -1090.3748| 3464.2449| 806.8797| 0.5052  | 3e-04  | 0.7752 |
+| 2     | 0.3170   | 0.3161        | 0.3139        | 102.0818| 3251.6275| -1286.4844| 3273.1360| 713.1345| 0.4468  | 3e-04  | 0.6856 |
+| 3     | 0.3359   | 0.3346        | 0.3316        | 57.1879 | 3208.7683| -1329.2376| 3235.6540| 693.8409| 0.4350  | 3e-04  | 0.6674 |
+| 4     | 0.3438   | 0.3421        | 0.3386        | 39.6184 | 3191.6693| -1346.2787| 3223.9321| 686.0331| 0.4304  | 3e-04  | 0.6603 |
+| 5     | 0.3515   | 0.3495        | 0.3454        | 22.4791 | 3174.7667| -1363.0770| 3212.4066| 678.3967| 0.4259  | 3e-04  | 0.6534 |
+| 6     | 0.3572   | 0.3548        | 0.3501        | 10.3837 | 3162.7015| -1375.0322| 3205.7185| 672.8782| 0.4227  | 3e-04  | 0.6485 |
+| 7     | 0.3595   | 0.3567        | 0.3515        | 6.6823  | 3158.9769| -1378.6948| 3207.3711| 670.8952| 0.4217  | 3e-04  | 0.6470 |
+| 8     | 0.3599   | 0.3567        | 0.3510        | 7.5516  | 3159.8391| -1377.8080| 3213.6105| 670.8399| 0.4219  | 3e-04  | 0.6473 |
+| 9     | 0.3602   | 0.3565        | 0.3501        | 8.9404  | 3161.2237| -1376.4025| 3220.3722| 671.0041| 0.4223  | 3e-04  | 0.6479 |
+| 10    | 0.3603   | 0.3562        | 0.3491        | 10.6832 | 3162.9648| -1374.6439| 3227.4904| 671.3182| 0.4227  | 3e-04  | 0.6486 |
+| 11    | 0.3606   | 0.3561        | 0.3483        | 12.0000 | 3164.2766| -1373.3075| 3234.1793| 671.4524| 0.4231  | 3e-04  | 0.6491 |
+
+
+## Best Subsets Regression Without Outliers
+
+
+### Model Index and Predictors
+
+| Model Index | Predictors                                                                                  |
+|-------------|---------------------------------------------------------------------------------------------|
+| 1           | alcohol                                                                                    |
+| 2           | volatile..acidity alcohol                                                                   |
+| 3           | volatile..acidity sulphates alcohol                                                         |
+| 4           | volatile..acidity total.sulfur.dioxide sulphates alcohol                                  |
+| 5           | volatile..acidity chlorides total.sulfur.dioxide sulphates alcohol                        |
+| 6           | volatile..acidity chlorides total.sulfur.dioxide pH sulphates alcohol                     |
+| 7           | volatile..acidity chlorides free.sulfur.dioxide total.sulfur.dioxide pH sulphates alcohol |
+| 8           | volatile..acidity citric.acid chlorides free.sulfur.dioxide total.sulfur.dioxide pH sulphates alcohol |
+| 9           | volatile..acidity citric.acid residual.sugar chlorides free.sulfur.dioxide total.sulfur.dioxide pH sulphates alcohol |
+| 10          | fixed.acidity volatile..acidity citric.acid residual.sugar chlorides free.sulfur.dioxide total.sulfur.dioxide pH sulphates alcohol |
+| 11          | fixed.acidity volatile..acidity citric.acid residual.sugar chlorides free.sulfur.dioxide total.sulfur.dioxide density pH sulphates alcohol |
+
+### Subsets Regression Summary without Outliers
+
+| Model | R-Square | Adj. R-Square | Pred R-Square | C(p)    | AIC      | SBIC      | SBC       | MSEP    | FPE     | HSP    | APC    |
+|-------|----------|---------------|---------------|---------|----------|-----------|-----------|---------|---------|--------|--------|
+| 1     | 0.2267   | 0.2263        | 0.2246        | 324.1115| 3448.1135| -1090.3748| 3464.2449| 806.8797| 0.5052  | 3e-04  | 0.7752 |
+| 2     | 0.3170   | 0.3161        | 0.3139        | 102.0818| 3251.6275| -1286.4844| 3273.1360| 713.1345| 0.4468  | 3e-04  | 0.6856 |
+| 3     | 0.3359   | 0.3346        | 0.3316        | 57.1879 | 3208.7683| -1329.2376| 3235.6540| 693.8409| 0.4350  | 3e-04  | 0.6674 |
+| 4     | 0.3438   | 0.3421        | 0.3386        | 39.6184 | 3191.6693| -1346.2787| 3223.9321| 686.0331| 0.4304  | 3e-04  | 0.6603 |
+| 5     | 0.3515   | 0.3495        | 0.3454        | 22.4791 | 3174.7667| -1363.0770| 3212.4066| 678.3967| 0.4259  | 3e-04  | 0.6534 |
+| 6     | 0.3572   | 0.3548        | 0.3501        | 10.3837 | 3162.7015| -1375.0322| 3205.7185| 672.8782| 0.4227  | 3e-04  | 0.6485 |
+| 7     | 0.3595   | 0.3567        | 0.3515        | 6.6823  | 3158.9769| -1378.6948| 3207.3711| 670.8952| 0.4217  | 3e-04  | 0.6470 |
+| 8     | 0.3599   | 0.3567        | 0.3510        | 7.5516  | 3159.8391| -1377.8080| 3213.6105| 670.8399| 0.4219  | 3e-04  | 0.6473 |
+| 9     | 0.3602   | 0.3565        | 0.3501        | 8.9404  | 3161.2237| -1376.4025| 3220.3722| 671.0041| 0.4223  | 3e-04  | 0.6479 |
+| 10    | 0.3603   | 0.3562        | 0.3491        | 10.6832 | 3162.9648| -1374.6439| 3227.4904| 671.3182| 0.4227  | 3e-04  | 0.6486 |
+| 11    | 0.3606   | 0.3561        | 0.3483        | 12.0000 | 3164.2766| -1373.3075| 3234.1793| 671.4524| 0.4231  | 3e-04  | 0.6491 |
+
+**AIC:** Akaike Information Criteria  
+**SBIC:** Sawa's Bayesian Information Criteria  
+**SBC:** Schwarz Bayesian Criteria  
+**MSEP:** Estimated error of prediction, assuming multivariate normality  
+**FPE:** Final Prediction Error  
+**HSP:** Hocking's Sp  
+**APC:** Amemiya Prediction Criteria
+
+I have decided not to remove the outliers because there are no significant difference in subset regression summary.
+
+Proceeding to eliminate the regressors in search of finding the best model with all of the data.
+
+From the above table, the models show that we have 11 models that stand out as being candidates for the **best model**, so our analysis will be on those 11 models to find the "best" model. So far it appears that model 7 and 8 may be the best fit as there AIC is lowest (3158.9769 and 3159.8391) and the highest Adjusted  R-Square(0.3567). The analysis on all 11 models has to be conducted to confirm if my assumption is right.
+
+\newpage
+
+| Predictor                         | Model 1 | Model 2 | Model 3 | Model 4 | Model 5 |
+|-----------------------------------|---------|---------|---------|---------|---------|
+| volatile..acidity                 |    1    |  1.0427 |  1.1111 |  1.1144 |  1.1349 |
+| chlorides                         |         |         |         |         |  1.2800 |
+| free.sulfur.dioxide               |         |         |         |         |         |
+| total.sulfur.dioxide              |         |         |         |  1.0515 |  1.0527 |
+| pH                                |         |         |         |         |         |
+| sulphates                         |         |         |  1.0751 |  1.0812 |  1.3159 |
+| alcohol                           |         |  1.0427 |  1.0446 |  1.0873 |  1.1622 |
+
+| Predictor                         | Model 6 | Model 7 | Model 8 | Model 9 | Model 10 | Model 11 |
+|-----------------------------------|---------|---------|---------|---------|----------|----------|
+| volatile..acidity                 |  1.2280 |  1.2418 |  1.6415 |  1.6539 |  1.7599 |  1.7894  |
+| chlorides                         |  1.3333 |  1.3333 |  1.3682 |  1.3703 |  1.4689 |  1.4819  |
+| free.sulfur.dioxide               |         |  1.8827 |  1.9198 |  1.9392 |  1.9487 |  1.9630  |
+| total.sulfur.dioxide              |  1.0538 |  1.9439 |  1.9933 |  2.0086 |  2.1732 |  2.1868  |
+| pH                                |  1.2187 |  1.2546 |  1.6092 |  1.6102 |  2.2394 |  3.3297  |
+| sulphates                         |  1.3212 |  1.3219 |  1.3294 |  1.3347 |  1.3415 |  1.4294  |
+| alcohol                           |  1.2187 |  1.2202 |  1.2690 |  1.2796 |  1.2996 |  3.0312  |
+| citric.acid                       |         |         |  2.1433 |  2.1836 |  3.1278 |  3.1280  |
+| residual.sugar                    |         |         |         |  1.0935 |  1.0994 |  1.7026  |
+| density                           |         |         |         |         |         |  6.3438  |
+| fixed.acidity                     |         |         |         |         |  2.9755 |  7.7675  |
+
+## Cross-Validation Test
+
+A **cross-validation test** was conducted to determine the best model by dividing the data into 5 folds for 5-fold cross-validation, which was repeated 10 times. Here, K = 5 represents 5-fold cross-validation, and R = 10 represents the repetitions of cross-validation. The Root Mean Squared Prediction Error (RTMSPE) is used to evaluate model performance.
+
+| Model    | RTMSPE    |
+|----------|-----------|
+| LS1_red  | 0.4093523 |
+| LS2_red  | 0.3925461 |
+| LS3_red  | 0.3840450 |
+| LS4_red  | 0.3755269 |
+| LS5_red  | 0.3718223 |
+| LS6_red  | 0.3716930 |
+| LS7_red  | 0.3704254 |
+| LS8_red  | 0.3709433 |
+| LS9_red  | 0.3705801 |
+| LS10_red | 0.3701532 |
+| LS11_red | 0.3700179 |
+
+LS11_red is the best-performing model, with the lowest Root Mean Squared Prediction Error (RTMSPE) of 0.3700179 among the evaluated models.
+
+## Model Training Results
+
+After training my data, I evaluated each model based on RMSE (Root Mean Squared Error) and R-squared values. The lower the RMSE, the better the model fits the data. The highest R-squared value also indicates a better fit, as it shows the proportion of variance explained by the model.
+
+| Model   | RMSE      | R-squared  |
+|---------|-----------|------------|
+| Model 1 | 0.7154018 | 0.2259184  |
+| Model 2 | 0.6561272 | 0.3501944  |
+| Model 3 | 0.6442288 | 0.3740412  |
+| Model 4 | 0.6406302 | 0.3812956  |
+| Model 5 | 0.6377251 | 0.3865862  |
+| Model 6 | 0.6389678 | 0.3836629  |
+| Model 7 | 0.6360662 | 0.389635   |
+| Model 8 | 0.6354588 | 0.3909449  |
+| Model 9 | 0.6351809 | 0.391473   |
+| Model 10| 0.6355821 | 0.3905961  |
+| Model 11| 0.6351877 | 0.3913797  |
+
+Model 9, with an RMSE of 0.6351809 and R-squared of 0.391473, is the best-performing model in terms of balancing predictive performance and model complexity. The inclusion of additional predictors beyond Model 9 did not significantly improve predictive performance, which suggests that adding more complexity could lead to overfitting.
+
+## Random Forest Algorithm Results
+
+To further explore model performance, I applied the Random Forest machine learning algorithm to the data. The Random Forest results for each model are as follows:
+
+| Model   | RMSE      | R-squared  |
+|---------|-----------|------------|
+| Model 1 | 0.7275283 | 0.2042848  |
+| Model 2 | 0.6582797 | 0.3461047  |
+| Model 3 | 0.6265142 | 0.4060919  |
+| Model 4 | 0.6001329 | 0.4585666  |
+| Model 5 | 0.5920438 | 0.4783019  |
+| Model 6 | 0.5869056 | 0.482932   |
+| Model 7 | 0.5815796 | 0.4948308  |
+| Model 8 | 0.5818991 | 0.4969148  |
+| Model 9 | 0.5805145 | 0.4981917  |
+| Model 10| 0.5835927 | 0.4935075  |
+| Model 11| 0.5829446 | 0.4953917  |
+
+Based on the Random Forest results, Model 9 appears to be the most effective model with the lowest RMSE (0.5805145) and the highest R-squared (0.4981917). This indicates that Model 9 provides a good balance between model complexity and predictive accuracy. Adding more predictors beyond Model 9 did not significantly improve performance, suggesting that further complexity might lead to overfitting.
+
+## Conclusion
+
+Model 9 consistently performed the best across both Linear Regression and Random Forest algorithms. Its predictive accuracy, with the lowest RMSE and highest R-squared, demonstrates that the inclusion of certain key physicochemical properties such as volatile acidity, citric acid, residual sugar, chlorides, free sulfur dioxide, total sulfur dioxide, pH, sulphates, and alcohol strikes the right balance between complexity and accuracy. 
+
+As noted by James et al. (2013) [@james2013introduction] and Murphy (2012) [@murphy2012machine], complex models may perform well on training data but risk overfitting when more predictors are added without improving performance. Thus, Model 9 is the optimal model for predicting wine quality based on physicochemical properties.
+
+\newpage
+
+## References
+
